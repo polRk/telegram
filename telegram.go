@@ -8,9 +8,10 @@ import (
 )
 
 type Telegram struct {
-	baseURL string
-	token   string
-	client  *http.Client
+	baseURL    string
+	token      string
+	client     *http.Client
+	bufferSize int
 }
 
 type Response struct {
@@ -20,23 +21,46 @@ type Response struct {
 	Description string      `json:"description,omitempty"`
 }
 
-func NewTelegram(token string) *Telegram {
+func NewTelegram(token string, bufferSize int) *Telegram {
+	if bufferSize == 0 {
+		bufferSize = 100
+	}
+
 	return &Telegram{
-		baseURL: fmt.Sprintf("https://api.telegram.org/bot%s", token),
-		token:   token,
-		client:  &http.Client{},
+		baseURL:    fmt.Sprintf("https://api.telegram.org/bot%s", token),
+		token:      token,
+		client:     &http.Client{},
+		bufferSize: bufferSize,
 	}
 }
 
-func (t Telegram) makeRequest(method string, payload interface{}, result interface{}) error {
-	url := fmt.Sprintf("%s/%s", t.baseURL, method)
+// ListenForWebhook registers a http handler for a webhook.
+func (tg *Telegram) Listen(pattern string) chan *Update {
+	ch := make(chan *Update, tg.bufferSize)
+
+	http.HandleFunc(pattern, func(w http.ResponseWriter, r *http.Request) {
+		var update Update
+
+		if json.NewDecoder(r.Body).Decode(&update) != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		ch <- &update
+	})
+
+	return ch
+}
+
+func (tg Telegram) makeRequest(method string, payload interface{}, result interface{}) error {
+	url := fmt.Sprintf("%s/%s", tg.baseURL, method)
 
 	body, err := json.Marshal(payload)
 	if err != nil {
 		return err
 	}
 
-	resp, err := t.client.Post(url, "application/json", bytes.NewBuffer(body))
+	resp, err := tg.client.Post(url, "application/json", bytes.NewBuffer(body))
 	if err != nil {
 		return err
 	}
