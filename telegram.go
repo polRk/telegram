@@ -22,10 +22,6 @@ type Response struct {
 }
 
 func NewTelegram(token string, bufferSize int) *Telegram {
-	if bufferSize == 0 {
-		bufferSize = 100
-	}
-
 	return &Telegram{
 		baseURL:    fmt.Sprintf("https://api.telegram.org/bot%s", token),
 		token:      token,
