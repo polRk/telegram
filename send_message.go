@@ -30,7 +30,7 @@ type SendMessageResponse struct {
 func (t *Telegram) SendMessage(payload SendMessagePayload) (*Message, error) {
 	var r SendMessageResponse
 
-	if err := t.MakeRequest("sendMessage", payload, &r); err != nil {
+	if err := t.makeRequest("sendMessage", payload, &r); err != nil {
 		return nil, err
 	}
 

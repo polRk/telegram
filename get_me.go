@@ -13,7 +13,7 @@ type GetMeResponse struct {
 func (t *Telegram) GetMe() (*User, error) {
 	var r GetMeResponse
 
-	if err := t.MakeRequest("getMe", nil, &r); err != nil {
+	if err := t.makeRequest("getMe", nil, &r); err != nil {
 		return nil, err
 	}
 

@@ -20,7 +20,7 @@ type GetUpdatesResponse struct {
 func (t *Telegram) GetUpdates(payload GetUpdatesPayload) ([]*Update, error) {
 	var r GetUpdatesResponse
 
-	if err := t.MakeRequest("getUpdates", payload, &r); err != nil {
+	if err := t.makeRequest("getUpdates", payload, &r); err != nil {
 		return nil, err
 	}
 

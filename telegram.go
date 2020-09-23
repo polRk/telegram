@@ -28,7 +28,7 @@ func NewTelegram(token string) *Telegram {
 	}
 }
 
-func (t Telegram) MakeRequest(method string, payload interface{}, result interface{}) error {
+func (t Telegram) makeRequest(method string, payload interface{}, result interface{}) error {
 	url := fmt.Sprintf("%s/%s", t.baseURL, method)
 
 	body, err := json.Marshal(payload)
