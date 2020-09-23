@@ -27,10 +27,10 @@ type SendMessageResponse struct {
 	Result *Message `json:"result"`
 }
 
-func (t *Telegram) SendMessage(payload SendMessagePayload) (*Message, error) {
+func (tg *Telegram) SendMessage(payload SendMessagePayload) (*Message, error) {
 	var r SendMessageResponse
 
-	if err := t.makeRequest("sendMessage", payload, &r); err != nil {
+	if err := tg.makeRequest("sendMessage", payload, &r); err != nil {
 		return nil, err
 	}
 

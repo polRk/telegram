@@ -17,10 +17,10 @@ type GetUpdatesResponse struct {
 	Result []*Update `json:"result"`
 }
 
-func (t *Telegram) GetUpdates(payload GetUpdatesPayload) ([]*Update, error) {
+func (tg *Telegram) GetUpdates(payload GetUpdatesPayload) ([]*Update, error) {
 	var r GetUpdatesResponse
 
-	if err := t.makeRequest("getUpdates", payload, &r); err != nil {
+	if err := tg.makeRequest("getUpdates", payload, &r); err != nil {
 		return nil, err
 	}
 

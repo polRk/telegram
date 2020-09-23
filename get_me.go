@@ -10,10 +10,10 @@ type GetMeResponse struct {
 	Result *User `json:"result"`
 }
 
-func (t *Telegram) GetMe() (*User, error) {
+func (tg *Telegram) GetMe() (*User, error) {
 	var r GetMeResponse
 
-	if err := t.makeRequest("getMe", nil, &r); err != nil {
+	if err := tg.makeRequest("getMe", nil, &r); err != nil {
 		return nil, err
 	}
 
