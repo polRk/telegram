@@ -30,7 +30,6 @@ func NewTelegram(token string, bufferSize int) *Telegram {
 	}
 }
 
-// ListenForWebhook registers a http handler for a webhook.
 func (tg *Telegram) Listen(pattern string) chan *Update {
 	ch := make(chan *Update, tg.bufferSize)
 
