@@ -1,13 +1,12 @@
 package telegram
 
 import (
-	"errors"
 	"fmt"
 )
 
-type ParseMode = string
+type ParseMode string
 
-var (
+const (
 	ParseModeMarkdown ParseMode = "Markdown"
 	ParseModeHTML     ParseMode = "HTML"
 )
@@ -34,8 +33,8 @@ func (tg *Telegram) SendMessage(payload SendMessagePayload) (*Message, error) {
 		return nil, err
 	}
 
-	if r.OK == false {
-		return nil, errors.New(fmt.Sprintf("telegram: %s", r.Description))
+	if !r.OK {
+		return nil, fmt.Errorf("telegram: %s", r.Description)
 	}
 
 	return r.Result, nil

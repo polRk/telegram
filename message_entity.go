@@ -7,7 +7,7 @@ const (
 	MessageEntityTypeHashTag       MessageEntityType = "hashtag"
 	MessageEntityTypeCashTag       MessageEntityType = "cashtag"
 	MessageEntityTypeBotCommand    MessageEntityType = "bot_command"
-	MessageEntityTypeUrl           MessageEntityType = "url"
+	MessageEntityTypeURL           MessageEntityType = "url"
 	MessageEntityTypeEmail         MessageEntityType = "email"
 	MessageEntityTypePhoneNumber   MessageEntityType = "phone_number"
 	MessageEntityTypeBold          MessageEntityType = "bold"

@@ -2,6 +2,7 @@ package telegram
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -43,6 +44,7 @@ func (tg *Telegram) Listen(pattern string) chan *Update {
 
 		if json.NewDecoder(r.Body).Decode(&update) != nil {
 			w.WriteHeader(http.StatusBadRequest)
+
 			return
 		}
 
@@ -61,7 +63,12 @@ func (tg Telegram) makeRequest(method string, payload interface{}, result interf
 		return err
 	}
 
-	resp, err := tg.client.Post(url, "application/json", bytes.NewBuffer(body))
+	req, err := http.NewRequestWithContext(context.Background(), http.MethodPost, url, bytes.NewBuffer(body))
+	if err != nil {
+		return nil
+	}
+
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return err
 	}

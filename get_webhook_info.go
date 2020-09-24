@@ -1,11 +1,10 @@
 package telegram
 
 import (
-	"errors"
 	"fmt"
 )
 
-// GetWebhookInfoResponse returns WebhookInfo on success
+// GetWebhookInfoResponse returns WebhookInfo on success.
 type GetWebhookInfoResponse struct {
 	Response
 	Result *WebhookInfo `json:"result"`
@@ -21,8 +20,8 @@ func (tg *Telegram) GetWebhookInfo() (*WebhookInfo, error) {
 		return nil, err
 	}
 
-	if r.OK == false {
-		return nil, errors.New(fmt.Sprintf("telegram: %s", r.Description))
+	if !r.OK {
+		return nil, fmt.Errorf("telegram: %s", r.Description)
 	}
 
 	return r.Result, nil

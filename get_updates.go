@@ -1,7 +1,6 @@
 package telegram
 
 import (
-	"errors"
 	"fmt"
 )
 
@@ -24,8 +23,8 @@ func (tg *Telegram) GetUpdates(payload GetUpdatesPayload) ([]*Update, error) {
 		return nil, err
 	}
 
-	if r.OK == false {
-		return nil, errors.New(fmt.Sprintf("telegram: %s", r.Description))
+	if !r.OK {
+		return nil, fmt.Errorf("telegram: %s", r.Description)
 	}
 
 	return r.Result, nil

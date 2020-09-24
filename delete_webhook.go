@@ -1,12 +1,12 @@
 package telegram
 
-// DeleteWebhookResponse returns True on success
+// DeleteWebhookResponse returns True on success.
 type DeleteWebhookResponse struct {
 	Response
 	Result bool `json:"result"`
 }
 
-// DeleteWebhook removes webhook integration
+// DeleteWebhook removes webhook integration.
 func (tg *Telegram) DeleteWebhook() (bool, error) {
 	var r DeleteWebhookResponse
 
