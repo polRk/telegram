@@ -7,6 +7,7 @@ import (
 	"net/http"
 )
 
+// Telegram represents a telegram bot api client.
 type Telegram struct {
 	baseURL    string
 	token      string
@@ -14,7 +15,7 @@ type Telegram struct {
 	bufferSize int
 }
 
-// Response is a response from the Telegram API
+// Response represents a response from the Telegram API.
 type Response struct {
 	OK          bool        `json:"ok"`
 	Result      interface{} `json:"result,omitempty"`
@@ -22,6 +23,7 @@ type Response struct {
 	Description string      `json:"description,omitempty"`
 }
 
+// NewTelegram returns a new Telegram.
 func NewTelegram(token string, bufferSize int) *Telegram {
 	return &Telegram{
 		baseURL:    fmt.Sprintf("https://api.telegram.org/bot%s", token),
@@ -31,6 +33,8 @@ func NewTelegram(token string, bufferSize int) *Telegram {
 	}
 }
 
+// Listen returns the *Update channel.
+// Listen adds handler to http.DefaultServeMux.
 func (tg *Telegram) Listen(pattern string) chan *Update {
 	ch := make(chan *Update, tg.bufferSize)
 
