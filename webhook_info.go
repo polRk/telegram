@@ -17,7 +17,7 @@ const (
 )
 
 type WebhookInfo struct {
-	Url                  string          `json:"url"`
+	URL                  string          `json:"url"`
 	HasCustomCertificate bool            `json:"has_custom_certificate,omitempty"`
 	PendingUpdateCount   int             `json:"pending_update_count,omitempty"`
 	LastErrorDate        int             `json:"last_error_date,omitempty"`
