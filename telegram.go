@@ -14,6 +14,7 @@ type Telegram struct {
 	bufferSize int
 }
 
+// Response is a response from the Telegram API
 type Response struct {
 	OK          bool        `json:"ok"`
 	Result      interface{} `json:"result,omitempty"`
@@ -47,6 +48,7 @@ func (tg *Telegram) Listen(pattern string) chan *Update {
 	return ch
 }
 
+// makeRequest makes a request to a specific endpoint with token.
 func (tg Telegram) makeRequest(method string, payload interface{}, result interface{}) error {
 	url := fmt.Sprintf("%s/%s", tg.baseURL, method)
 
