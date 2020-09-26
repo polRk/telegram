@@ -6,6 +6,6 @@ type ForceReply struct {
 }
 
 // Validate returns an error if value is invalid.
-func (k ForceReply) Validate() error {
+func (k *ForceReply) Validate() error {
 	return nil
 }
