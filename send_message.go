@@ -25,8 +25,14 @@ func (p SendMessagePayload) Validate() error {
 		return fmt.Errorf("telegram[SendMessagePayload]: Text is required")
 	}
 
-	if err := p.ParseMode.Validate(); err != nil {
-		return err
+	if len(p.Text) > 4096 {
+		return fmt.Errorf("telegram[SendMessagePayload]: Text length should be less than 4096")
+	}
+
+	if len(p.ParseMode) != 0 {
+		if err := p.ParseMode.Validate(); err != nil {
+			return err
+		}
 	}
 
 	if p.ReplyMarkup != nil {
