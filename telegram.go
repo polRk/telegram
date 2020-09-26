@@ -34,9 +34,20 @@ func NewTelegram(token string, bufferSize int) *Telegram {
 	}
 }
 
-// Listen returns the *Update channel.
-// Listen adds handler to http.DefaultServeMux.
-func (tg *Telegram) Listen(pattern string) chan *Update {
+// ListenAndServe listens and push incoming updates to *Update channel.
+func (tg *Telegram) ListenAndServe(addr string) (chan *Update, error) {
+	ch := tg.HandleUpdates(fmt.Sprintf("/%s", tg.token))
+
+	if err := http.ListenAndServe(addr, nil); err != nil {
+		return nil, err
+	}
+
+	return ch, nil
+}
+
+// HandleUpdates returns the *Update channel.
+// HandleUpdates adds handler to http.DefaultServeMux.
+func (tg *Telegram) HandleUpdates(pattern string) chan *Update {
 	ch := make(chan *Update, tg.bufferSize)
 
 	http.HandleFunc(pattern, func(w http.ResponseWriter, r *http.Request) {
