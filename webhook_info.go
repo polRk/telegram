@@ -1,6 +1,6 @@
 package telegram
 
-type AllowedUpdate string
+import "fmt"
 
 const (
 	AllowedUpdateMessage            AllowedUpdate = "message"
@@ -16,6 +16,13 @@ const (
 	AllowedUpdatePollAnswer         AllowedUpdate = "poll_answer"
 )
 
+// ErrBadAllowedUpdateValue indicates an invalid value.
+var ErrBadAllowedUpdateValue = fmt.Errorf("telegram: bad value for AllowedUpdate type")
+
+// AllowedUpdate is an Update type
+type AllowedUpdate string
+
+// WebhookInfo represents information about the current status of a webhook.
 type WebhookInfo struct {
 	URL                  string          `json:"url"`
 	HasCustomCertificate bool            `json:"has_custom_certificate,omitempty"`
@@ -24,4 +31,24 @@ type WebhookInfo struct {
 	LastErrorMessage     int             `json:"last_error_message,omitempty"`
 	MaxConnections       int             `json:"max_connections,omitempty"`
 	AllowedUpdates       []AllowedUpdate `json:"allowed_updates,omitempty"`
+}
+
+// Validate returns an error if value is invalid.
+func (au AllowedUpdate) Validate() error {
+	switch au {
+	case AllowedUpdateMessage,
+		AllowedUpdateEditedMessage,
+		AllowedUpdateChannelPost,
+		AllowedUpdateEditedChannelPost,
+		AllowedUpdateInlineQuery,
+		AllowedUpdateChosenInlineResult,
+		AllowedUpdateCallbackQuery,
+		AllowedUpdateShippingQuery,
+		AllowedUpdatePreCheckoutQuery,
+		AllowedUpdatePoll,
+		AllowedUpdatePollAnswer:
+		return nil
+	}
+
+	return ErrBadAllowedUpdateValue
 }
