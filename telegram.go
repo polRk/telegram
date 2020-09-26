@@ -37,6 +37,7 @@ func NewTelegram(token string, bufferSize int) *Telegram {
 	}
 }
 
+// StartPolling runs fetching updates and sends result to channel.
 func (tg *Telegram) StartPolling(uu []AllowedUpdate) <-chan *Update {
 	ch := make(chan *Update, tg.bufferSize)
 
@@ -71,6 +72,7 @@ func (tg *Telegram) StartPolling(uu []AllowedUpdate) <-chan *Update {
 	return ch
 }
 
+// StopPolling stops fetching updates.
 func (tg *Telegram) StopPolling() {
 	tg.shutdownChannel <- nil
 }
