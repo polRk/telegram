@@ -21,7 +21,7 @@ func (tg *Telegram) GetWebhookInfo() (*WebhookInfo, error) {
 	}
 
 	if !r.OK {
-		return nil, fmt.Errorf("telegram: %s", r.Description)
+		return nil, fmt.Errorf("telegram[GetWebhookInfo]: %s", r.Description)
 	}
 
 	return r.Result, nil

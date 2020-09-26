@@ -6,27 +6,38 @@ import (
 
 // SendMessagePayload represents a request payload for method Telegram.SendMessage.
 type SendMessagePayload struct {
-	ChatID                int         `json:"chat_id"`
-	Text                  string      `json:"text"`
-	ParseMode             ParseMode   `json:"parse_mode,omitempty"`
-	DisableWebPagePreview bool        `json:"disable_web_page_preview,omitempty"`
-	DisableNotification   bool        `json:"disable_notification,omitempty"`
-	ReplyToMessageID      int         `json:"reply_to_message_id,omitempty"`
-	ReplyMarkup           interface{} `json:"reply_markup,omitempty"`
+	ChatID                int                           `json:"chat_id"`
+	Text                  string                        `json:"text"`
+	ParseMode             ParseMode                     `json:"parse_mode,omitempty"`
+	DisableWebPagePreview bool                          `json:"disable_web_page_preview,omitempty"`
+	DisableNotification   bool                          `json:"disable_notification,omitempty"`
+	ReplyToMessageID      int                           `json:"reply_to_message_id,omitempty"`
+	ReplyMarkup           interface{ Validate() error } `json:"reply_markup,omitempty"`
 }
 
 // Validate returns an error if payload is invalid.
 func (p SendMessagePayload) Validate() error {
 	if p.ChatID == 0 {
-		return fmt.Errorf("telegram: ChatID is required")
+		return fmt.Errorf("telegram[SendMessagePayload]: ChatID is required")
 	}
 
 	if len(p.Text) == 0 {
-		return fmt.Errorf("telegram: Text is required")
+		return fmt.Errorf("telegram[SendMessagePayload]: Text is required")
 	}
 
 	if err := p.ParseMode.Validate(); err != nil {
 		return err
+	}
+
+	if p.ReplyMarkup != nil {
+		switch p.ReplyMarkup.(type) {
+		case *InlineKeyboardMarkup, *ReplyKeyboardMarkup, *ReplyKeyboardRemove, *ForceReply:
+			if err := p.ReplyMarkup.Validate(); err != nil {
+				return err
+			}
+		default:
+			return fmt.Errorf("telegram[SendMessagePayload]: Text is required")
+		}
 	}
 
 	return nil
@@ -53,7 +64,7 @@ func (tg *Telegram) SendMessage(payload SendMessagePayload) (*Message, error) {
 	}
 
 	if !r.OK {
-		return nil, fmt.Errorf("telegram: %s", r.Description)
+		return nil, fmt.Errorf("telegram[SendMessage]: %s", r.Description)
 	}
 
 	return r.Result, nil

@@ -17,7 +17,7 @@ const (
 )
 
 // ErrBadAllowedUpdateValue indicates an invalid value.
-var ErrBadAllowedUpdateValue = fmt.Errorf("telegram: bad value for AllowedUpdate type")
+var ErrBadAllowedUpdateValue = fmt.Errorf("telegram[AllowedUpdate]: bad value")
 
 // AllowedUpdate is an Update type
 type AllowedUpdate string

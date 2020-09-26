@@ -13,11 +13,11 @@ type SetWebhookPayload struct {
 // Validate returns an error if payload is invalid.
 func (p SetWebhookPayload) Validate() error {
 	if len(p.URL) == 0 {
-		return fmt.Errorf("telegram: URL is required")
+		return fmt.Errorf("telegram[SetWebhookPayload]: URL is required")
 	}
 
 	if p.MaxConnections != 0 && (p.MaxConnections < 1 || p.MaxConnections > 100) {
-		return fmt.Errorf("telegram: MaxConnections should be >= 1 and <= 100")
+		return fmt.Errorf("telegram[SetWebhookPayload]: MaxConnections should be >= 1 and <= 100")
 	}
 
 	for _, allowedUpdate := range p.AllowedUpdates {

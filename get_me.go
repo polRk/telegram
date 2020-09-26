@@ -20,7 +20,7 @@ func (tg *Telegram) GetMe() (*User, error) {
 	}
 
 	if !r.OK {
-		return nil, fmt.Errorf("telegram: %s", r.Description)
+		return nil, fmt.Errorf("telegram[GetMe]: %s", r.Description)
 	}
 
 	return r.Result, nil

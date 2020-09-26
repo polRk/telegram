@@ -15,11 +15,11 @@ type GetUpdatesPayload struct {
 // Validate returns an error if payload is invalid.
 func (p GetUpdatesPayload) Validate() error {
 	if p.Limit != 0 && (p.Limit < 1 || p.Limit > 100) {
-		return fmt.Errorf("telegram: Limit should be >= 1 and <= 100")
+		return fmt.Errorf("telegram[GetUpdatesPayload]: Limit should be >= 1 and <= 100")
 	}
 
 	if p.Timeout < 0 {
-		return fmt.Errorf("telegram: Timeout should be > 0")
+		return fmt.Errorf("telegram[GetUpdatesPayload]: Timeout should be > 0")
 	}
 
 	for _, allowedUpdate := range p.AllowedUpdates {
@@ -52,7 +52,7 @@ func (tg *Telegram) GetUpdates(payload GetUpdatesPayload) ([]*Update, error) {
 	}
 
 	if !r.OK {
-		return nil, fmt.Errorf("telegram: %s", r.Description)
+		return nil, fmt.Errorf("telegram[GetUpdates]: %s", r.Description)
 	}
 
 	return r.Result, nil

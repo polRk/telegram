@@ -8,7 +8,7 @@ const (
 )
 
 // ErrBadAllowedUpdateValue indicates an invalid value.
-var ErrBadParseModeValue = fmt.Errorf("telegram: bad value for ParseMode type")
+var ErrBadParseModeValue = fmt.Errorf("telegram[ParseMode]: bad value")
 
 // ParseMode represents how to parse entities in the message text.
 type ParseMode string
