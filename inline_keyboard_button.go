@@ -16,7 +16,7 @@ type InlineKeyboardButton struct {
 }
 
 // Validate returns an error if value is invalid.
-func (b *InlineKeyboardButton) Validate() error {
+func (b InlineKeyboardButton) Validate() error {
 	optionalCount := 0
 
 	if len(b.Text) == 0 {

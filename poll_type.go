@@ -13,8 +13,8 @@ var ErrBadPollTypeValue = fmt.Errorf("telegram[PollType]: bad value")
 type PollType string
 
 // Validate returns an error if value is invalid.
-func (p *PollType) Validate() error {
-	switch *p {
+func (p PollType) Validate() error {
+	switch p {
 	case PollTypeRegular, PollTypeQuiz:
 		return nil
 	}

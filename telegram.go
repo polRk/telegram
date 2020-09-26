@@ -66,7 +66,7 @@ func (tg *Telegram) HandleUpdates(pattern string) chan *Update {
 }
 
 // makeRequest makes a request to a specific endpoint with token.
-func (tg Telegram) makeRequest(method string, payload interface{}, result interface{}) error {
+func (tg *Telegram) makeRequest(method string, payload interface{}, result interface{}) error {
 	url := fmt.Sprintf("%s/%s", tg.baseURL, method)
 
 	body, err := json.Marshal(payload)
