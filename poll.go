@@ -1,12 +1,5 @@
 package telegram
 
-type PollType string
-
-const (
-	PollTypeRegular PollType = "regular"
-	PollTypeQuiz    PollType = "quiz"
-)
-
 type Poll struct {
 	ID                    string           `json:"id"`
 	Question              string           `json:"question"`
