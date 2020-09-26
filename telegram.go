@@ -28,6 +28,11 @@ type Response struct {
 
 // NewTelegram returns a new Telegram.
 func NewTelegram(token string, bufferSize int) *Telegram {
+	if bufferSize < 1 || bufferSize > 100 {
+		fmt.Println("telegram[NewTelegram]: bufferSize should be >= 1 and <= 100")
+		bufferSize = 100
+	}
+
 	return &Telegram{
 		baseURL:         fmt.Sprintf("https://api.telegram.org/bot%s", token),
 		token:           token,
@@ -52,7 +57,11 @@ func (tg *Telegram) StartPolling(uu []AllowedUpdate) <-chan *Update {
 			default:
 			}
 
-			payload := GetUpdatesPayload{Offset: lastUpdateID, AllowedUpdates: uu}
+			payload := GetUpdatesPayload{
+				Offset:         lastUpdateID,
+				Limit:          tg.bufferSize,
+				AllowedUpdates: uu,
+			}
 			updates, err := tg.GetUpdates(payload)
 			if err != nil {
 				println("Err", err.Error())
