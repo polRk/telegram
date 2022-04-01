@@ -1,3 +1,3 @@
-module github.com/polRk/telegram
+module telegram
 
-go 1.15
+go 1.18
