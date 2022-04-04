@@ -1,3 +1,5 @@
+// Bot API 5.7
+
 package api
 
 // Invoice contains basic information about an invoice.

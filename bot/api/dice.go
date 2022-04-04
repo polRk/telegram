@@ -1,3 +1,5 @@
+// Bot API 5.7
+
 package api
 
 // Dice is an animated emoji that displays a random value.
