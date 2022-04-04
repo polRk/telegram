@@ -1,3 +1,5 @@
+// Bot API 5.7
+
 package api
 
 // PhotoSize is one size of a photo or a file / sticker thumbnail.

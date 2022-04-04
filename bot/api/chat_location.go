@@ -1,3 +1,5 @@
+// Bot API 5.7
+
 package api
 
 // ChatLocation is a location to which a chat is connected.
