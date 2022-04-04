@@ -5,6 +5,7 @@ package api
 type ChatType string
 
 const (
+	ChatTypeSender     ChatType = "sender"
 	ChatTypePrivate    ChatType = "private"
 	ChatTypeGroup      ChatType = "group"
 	ChatTypeSuperGroup ChatType = "supergroup"
