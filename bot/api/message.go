@@ -313,10 +313,6 @@ type Message struct {
 	ReplyMarkup *InlineKeyboardMarkup `json:"reply_markup,omitempty"`
 }
 
-type MessageAutoDeleteTimerChanged struct {
-	MessageAutoDeleteTime int `json:"message_auto_delete_time"`
-}
-
 func (m *Message) Validate() bool {
 	if len(m.Caption) > 1024 {
 		return false

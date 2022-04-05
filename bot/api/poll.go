@@ -2,11 +2,6 @@
 
 package api
 
-type PollOption struct {
-	Text       string `json:"text"`
-	VoterCount int    `json:"voter_count"`
-}
-
 const (
 	PollTypeRegular PollType = "regular"
 	PollTypeQuiz    PollType = "quiz"
