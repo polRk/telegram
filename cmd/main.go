@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"github.com/polRk/telegram"
 	"log"
 	"os"
@@ -8,9 +9,9 @@ import (
 
 func main() {
 	token := os.Getenv("TOKEN")
+	client := telegram.New(token)
 
-	client := telegram.NewClient(token)
-	bot, err := client.GetMe()
+	bot, err := client.GetMe(context.Background())
 	if err != nil {
 		log.Fatalln(err)
 	}
