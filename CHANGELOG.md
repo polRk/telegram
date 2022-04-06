@@ -1,5 +1,8 @@
 package api
 
+## 06.04.2022
+- Update package name
+
 ## 05.04.2022 
 - Update project layout
 - Update telegram types
