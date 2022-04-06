@@ -2773,3 +2773,11 @@ type GameHighScore struct {
 	// Score.
 	Score int `json:"score"`
 }
+
+type ParseMode string
+
+const (
+	ParseModeHTML       = "HTML"
+	ParseModeMarkdown   = "Markdown"
+	ParseModeMarkdownV2 = "MarkdownV2"
+)
