@@ -62,6 +62,12 @@ type WebhookInfo struct {
 	// Optional.
 	LastErrorMessage int `json:"last_error_message,omitempty"`
 
+	// LastSynchronizationErrorDate is unix time of the most recent error that happened
+	// when trying to synchronize available updates with Telegram datacenters.
+	//
+	// Optional.
+	LastSynchronizationErrorDate int `json:"last_synchronization_error_date,omitempty"`
+
 	// MaxConnections is the maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery.
 	//
 	// Optional.
@@ -622,25 +628,30 @@ type Message struct {
 	// Optional.
 	ProximityAlertTriggered *ProximityAlertTriggered `json:"proximity_alert_triggered,omitempty"`
 
-	// VoiceChatScheduled is a service message: voice chat scheduled.
+	// VideoChatScheduled is a service message: video chat scheduled.
 	//
 	// Optional.
-	VoiceChatScheduled *VoiceChatScheduled `json:"voice_chat_scheduled,omitempty"`
+	VideoChatScheduled *VoiceChatScheduled `json:"video_chat_scheduled,omitempty"`
 
-	// VoiceChatStarted is a service message: voice chat started.
+	// VideoChatStarted is a service message: video chat started.
 	//
 	// Optional.
-	VoiceChatStarted *VoiceChatStarted `json:"voice_chat_started,omitempty"`
+	VideoChatStarted *VoiceChatStarted `json:"video_chat_started,omitempty"`
 
-	// VoiceChatStarted is a service message: voice chat ended.
+	// VideoChatStarted is a service message: video chat ended.
 	//
 	// Optional.
-	VoiceChatEnded *VoiceChatEnded `json:"voice_chat_ended,omitempty"`
+	VideoChatEnded *VoiceChatEnded `json:"video_chat_ended,omitempty"`
 
-	// VoiceChatParticipantsInvited is a service message: new participants invited to a voice chat.
+	// VideoChatParticipantsInvited is a service message: new participants invited to a video chat.
 	//
 	// Optional.
-	VoiceChatParticipantsInvited *VoiceChatParticipantsInvited `json:"voice_chat_participants_invited,omitempty"`
+	VideoChatParticipantsInvited *VoiceChatParticipantsInvited `json:"video_chat_participants_invited,omitempty"`
+
+	// WebAppData is a service message: data sent by a Web App.
+	//
+	// Optional.
+	WebAppData *WebAppData `json:"web_app_data,omitempty"`
 
 	// ReplyMarkup is an inline keyboard attached to the message.
 	// Note: login_url buttons are represented as ordinary url buttons.
@@ -1139,6 +1150,16 @@ type Venue struct {
 	GooglePlaceType string `json:"google_place_type,omitempty"`
 }
 
+// WebAppData is a data sent from a Web App to the bot.
+type WebAppData struct {
+	// Data. Be aware that a bad client can send arbitrary data in this field.
+	Data string `json:"data"`
+
+	// ButtonText is a text of the web_app keyboard button, from which the Web App was opened.
+	// Be aware that a bad client can send arbitrary data in this field.
+	ButtonText string `json:"button_text"`
+}
+
 // ProximityAlertTriggered is the content of a service message,
 // sent whenever a user in the chat triggers a proximity alert set by another user.
 type ProximityAlertTriggered struct {
@@ -1216,6 +1237,13 @@ type File struct {
 	FilePath string `json:"file_path,omitempty"`
 }
 
+// WebAppInfo is an information about a Web App.
+type WebAppInfo struct {
+	// URL is an HTTPS URL of a Web App to be opened with additional data as specified in Initializing Web Apps.
+	// https://core.telegram.org/bots/webapps#initializing-web-apps
+	URL string `json:"url"`
+}
+
 // ReplyKeyboardMarkup is a custom keyboard with reply options (see Introduction to bots for details and examples).
 type ReplyKeyboardMarkup struct {
 	// Keyboard is an array of button rows, each represented by an Array of KeyboardButton objects.
@@ -1273,6 +1301,13 @@ type KeyboardButton struct {
 	//
 	// Optional.
 	RequestPoll *KeyboardButtonPollType `json:"request_poll,omitempty"`
+
+	// WebApp described Web App will be launched when the button is pressed.
+	// The Web App will be able to send a “web_app_data” service message.
+	// Available in ChatTypePrivate.
+	//
+	// Optional.
+	WebApp *WebAppInfo `json:"web_app"`
 }
 
 // KeyboardButtonPollType is a type of poll,
@@ -1331,6 +1366,13 @@ type InlineKeyboardButton struct {
 	//
 	// Optional.
 	CallbackData string `json:"callback_data,omitempty"`
+
+	// WebApp is a description of the Web App that will be launched when the user presses the button.
+	// The Web App will be able to send an arbitrary message on behalf of the user using the method answerWebAppQuery.
+	// Available only in ChatTypePrivate between a user and the bot.
+	//
+	// Optional.
+	WebApp *WebAppInfo `json:"web_app"`
 
 	// SwitchInlineQuery if set, pressing the button will prompt the user to select one of their chats,
 	// open that chat and insert the bot's username and the specified inline query in the input field.
@@ -1512,6 +1554,56 @@ type ChatInviteLink struct {
 	PendingJoinRequestCount int `json:"pending_join_request_count,omitempty"`
 }
 
+// ChatAdministratorRights is the rights of an administrator in a chat.
+type ChatAdministratorRights struct {
+	// IsAnonymous is True, if the user's presence in the chat is hidden.
+	IsAnonymous bool `json:"is_anonymous"`
+
+	// CanManageChat is True, if the administrator can access the chat event log, chat statistics,
+	// message statistics in channels, see channel members,
+	// see anonymous administrators in supergroups and ignore slow mode.
+	// Implied by any other administrator privilege.
+	CanManageChat bool `json:"can_manage_chat"`
+
+	// CanDeleteMessages is True, if the administrator can delete messages of other users.
+	CanDeleteMessages bool `json:"can_delete_messages"`
+
+	// CanManageVideoChats is True, if the administrator can manage video chats.
+	CanManageVideoChats bool `json:"can_manage_video_chats"`
+
+	// CanRestrictMembers is True, if the administrator can restrict, ban or unban chat members.
+	CanRestrictMembers bool `json:"can_restrict_members"`
+
+	// CanPromoteMembers is True, if the administrator can add new administrators
+	// with a subset of their own privileges or demote administrators
+	// that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user).
+	CanPromoteMembers bool `json:"can_promote_members"`
+
+	// CanChangeInfo is True, if the user is allowed to change the chat title, photo and other settings.
+	CanChangeInfo bool `json:"can_change_info"`
+
+	// CanInviteUsers is True, if the user is allowed to invite new users to the chat
+	CanInviteUsers bool `json:"can_invite_users"`
+
+	// CanPostMessages is True, if the administrator can post in the channel;
+	// ChatTypeChannel only.
+	//
+	// Optional.
+	CanPostMessages bool `json:"can_post_messages,omitempty"`
+
+	// CanEditMessages is True, if the administrator can edit messages of other users and can pin messages;
+	// ChatTypeChannel only.
+	//
+	// Optional.
+	CanEditMessages bool `json:"can_edit_messages,omitempty"`
+
+	// CanPinMessages is True, if the user is allowed to pin messages;
+	// ChatTypeGroup and ChatTypeSuperGroup only.
+	//
+	// Optional.
+	CanPinMessages bool `json:"can_pin_messages,omitempty"`
+}
+
 type ChatMemberStatus string
 
 const (
@@ -1532,118 +1624,13 @@ const (
 // ChatMemberLeft,
 // ChatMemberBanned.
 type ChatMember struct {
-	// Status is the member's status in the chat.
-	Status ChatMemberStatus `json:"status"`
-
-	// User is an information about the user.
-	User *User `json:"user"`
-
-	// IsMember is True, if the user is a member of the chat at the moment of the request.
-	//
-	// Optional.
-	IsMember bool `json:"is_member,omitempty"`
-
-	// CanBeEdited is True, if the bot is allowed to edit administrator privileges of that user.
-	//
-	// Optional.
-	CanBeEdited bool `json:"can_be_edited,omitempty"`
-
-	// IsAnonymous is True, if the user's presence in the chat is hidden.
-	//
-	// Optional.
-	IsAnonymous bool `json:"is_anonymous,omitempty"`
-
-	// CanManageChat is True, if the administrator can access the chat event log, chat statistics,
-	// message statistics in channels, see channel members, see anonymous administrators in supergroups
-	// and ignore slow mode. Implied by any other administrator privilege.
-	//
-	// Optional.
-	CanManageChat bool `json:"can_manage_chat,omitempty"`
-
-	// CanDeleteMessages is True, if the administrator can delete messages of other users.
-	//
-	// Optional.
-	CanDeleteMessages bool `json:"can_delete_messages,omitempty"`
-
-	// CanManageVoiceChats is True, if the administrator can manage voice chats.
-	//
-	// Optional.
-	CanManageVoiceChats bool `json:"can_manage_voice_chats,omitempty"`
-
-	// CanRestrictMembers is True, if the administrator can restrict, ban or unban chat members.
-	//
-	// Optional.
-	CanRestrictMembers bool `json:"can_restrict_members,omitempty"`
-
-	// CanPromoteMembers is True, if the administrator can add new administrators
-	// with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly
-	// (promoted by administrators that were appointed by the user).
-	//
-	// Optional.
-	CanPromoteMembers bool `json:"can_promote_members,omitempty"`
-
-	// CanChangeInfo is True, if the user is allowed to change the chat title, photo and other settings.
-	//
-	// Optional.
-	CanChangeInfo bool `json:"can_change_info,omitempty"`
-
-	// CanInviteUsers is True, if the user is allowed to invite new users to the chat.
-	//
-	// Optional.
-	CanInviteUsers bool `json:"can_invite_users,omitempty"`
-
-	// CanPostMessages is True, if the administrator can post in the channel.
-	// ChatTypeChannel only.
-	//
-	// Optional.
-	CanPostMessages bool `json:"can_post_messages,omitempty"`
-
-	// CanEditMessages is True, if the administrator can edit messages of other users and can pin messages.
-	// ChatTypeChannel only.
-	//
-	// Optional.
-	CanEditMessages bool `json:"can_edit_messages,omitempty"`
-
-	// CanPinMessages is True, if the user is allowed to pin messages; groups and supergroups only.
-	//
-	// Optional.
-	CanPinMessages bool `json:"can_pin_messages,omitempty"`
-
-	// CanSendMessages is True, if the user is allowed to send text messages, contacts, locations and venues.
-	//
-	// Optional.
-	CanSendMessages bool `json:"can_send_messages,omitempty"`
-
-	// CanSendMediaMessages is True, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes.
-	//
-	// Optional.
-	CanSendMediaMessages bool `json:"can_send_media_messages,omitempty"`
-
-	// CanSendPolls is True, if the user is allowed to send polls.
-	//
-	// Optional.
-	CanSendPolls bool `json:"can_send_polls,omitempty"`
-
-	// CanSendOtherMessages is True, if the user is allowed to send animations, games, stickers and use inline bots.
-	//
-	// Optional.
-	CanSendOtherMessages bool `json:"can_send_other_messages,omitempty"`
-
-	// CanAddWebPagePreviews is True, if the user is allowed to add web page previews to their messages.
-	//
-	// Optional.
-	CanAddWebPagePreviews bool `json:"can_add_web_page_previews,omitempty"`
-
-	// UntilDate is a date when restrictions will be lifted for this user; unix time.
-	// If 0, then the user is restricted/banned forever.
-	//
-	// Optional.
-	UntilDate int `json:"until_date,omitempty"`
-
-	// CustomTitle is a custom title for this user.
-	//
-	// Optional.
-	CustomTitle string `json:"custom_title,omitempty"`
+	ChatMemberOwner
+	ChatMemberAdministrator
+	ChatMemberMember
+	ChatMemberRestricted
+	ChatMemberLeft
+	ChatMemberBanned
+	ChatMemberUpdated
 }
 
 // ChatMemberOwner is a chat member that owns the chat and has all administrator privileges.
@@ -1685,8 +1672,8 @@ type ChatMemberAdministrator struct {
 	// CanDeleteMessages is True, if the administrator can delete messages of other users.
 	CanDeleteMessages bool `json:"can_delete_messages"`
 
-	// CanManageVoiceChats is True, if the administrator can manage voice chats.
-	CanManageVoiceChats bool `json:"can_manage_voice_chats"`
+	// CanManageVideoChats is True, if the administrator can manage video chats.
+	CanManageVideoChats bool `json:"can_manage_video_chats"`
 
 	// CanRestrictMembers is True, if the administrator can restrict, ban or unban chat members.
 	CanRestrictMembers bool `json:"can_restrict_members"`
@@ -1906,6 +1893,18 @@ type BotCommand struct {
 	Description string `json:"description"`
 }
 
+type BotCommandScopeType string
+
+const (
+	BotCommandScopeTypeDefault               BotCommandScopeType = "default"
+	BotCommandScopeTypeAllPrivateChats       BotCommandScopeType = "all_private_chats"
+	BotCommandScopeTypeAllGroupChats         BotCommandScopeType = "all_group_chats"
+	BotCommandScopeTypeAllChatAdministrators BotCommandScopeType = "all_chat_administrators"
+	BotCommandScopeTypeChat                  BotCommandScopeType = "chat"
+	BotCommandScopeTypeChatAdministrators    BotCommandScopeType = "chat_administrators"
+	BotCommandScopeTypeChatMember            BotCommandScopeType = "chat_member"
+)
+
 // BotCommandScope is the scope to which bot commands are applied.
 // Currently, the following 7 scopes are supported:
 // BotCommandScopeDefault,
@@ -1916,50 +1915,45 @@ type BotCommand struct {
 // BotCommandScopeChatAdministrators,
 // BotCommandScopeChatMember.
 type BotCommandScope struct {
-	// Type of the scope.
-	Type string `json:"type"`
-
-	// ChatID is a unique identifier for the target chat or username.
-	//
-	// Optional.
-	ChatID int64 `json:"chat_id,omitempty"`
-
-	// ChatID is a unique identifier of the target user.
-	//
-	// Optional.
-	UserID int64 `json:"user_id,omitempty"`
+	BotCommandScopeDefault
+	BotCommandScopeAllPrivateChats
+	BotCommandScopeAllGroupChats
+	BotCommandScopeAllChatAdministrators
+	BotCommandScopeChat
+	BotCommandScopeChatAdministrators
+	BotCommandScopeChatMember
 }
 
 // BotCommandScopeDefault is the default scope of bot commands.
 // Default commands are used if no commands with a narrower scope are specified for the user.
 type BotCommandScopeDefault struct {
-	// Type is a scope type, must be default.
-	Type string `json:"type"`
+	// Type is a scope type, must be BotCommandScopeTypeDefault.
+	Type BotCommandScopeType `json:"type"`
 }
 
 // BotCommandScopeAllPrivateChats is the scope of bot commands, covering all private chats.
 type BotCommandScopeAllPrivateChats struct {
-	// Type is a scope type, must be all_private_chats.
-	Type string `json:"type"`
+	// Type is a scope type, must be BotCommandScopeTypeAllPrivateChats.
+	Type BotCommandScopeType `json:"type"`
 }
 
 // BotCommandScopeAllGroupChats is the scope of bot commands, covering all group and supergroup chats.
 type BotCommandScopeAllGroupChats struct {
-	// Type is a scope type, must be all_group_chats.
-	Type string `json:"type"`
+	// Type is a scope type, must be BotCommandScopeTypeAllGroupChats.
+	Type BotCommandScopeType `json:"type"`
 }
 
 // BotCommandScopeAllChatAdministrators is the scope of bot commands,
 // covering all group and supergroup chat administrators.
 type BotCommandScopeAllChatAdministrators struct {
-	// Type is a scope type, must be all_chat_administrators.
-	Type string `json:"type"`
+	// Type is a scope type, must be BotCommandScopeTypeAllChatAdministrators.
+	Type BotCommandScopeType `json:"type"`
 }
 
 // BotCommandScopeChat is the scope of bot commands, covering a specific chat.
 type BotCommandScopeChat struct {
-	// Type is a scope type, must be chat.
-	Type string `json:"type"`
+	// Type is a scope type, must be BotCommandScopeTypeChat.
+	Type BotCommandScopeType `json:"type"`
 
 	// ChatID is a unique identifier for the target chat or username of the target supergroup
 	// (in the format @supergroupusername).
@@ -1969,8 +1963,8 @@ type BotCommandScopeChat struct {
 // BotCommandScopeChatAdministrators is the scope of bot commands,
 // covering all administrators of a specific group or supergroup chat.
 type BotCommandScopeChatAdministrators struct {
-	// Type is a scope type, must be chat_administrators.
-	Type string `json:"type"`
+	// Type is a scope type, must be BotCommandScopeTypeChatAdministrators.
+	Type BotCommandScopeType `json:"type"`
 
 	// ChatID is a unique identifier for the target chat or username of the target supergroup
 	// (in the format @supergroupusername).
@@ -1979,14 +1973,68 @@ type BotCommandScopeChatAdministrators struct {
 
 // BotCommandScopeChatMember is the scope of bot commands, covering a specific member of a group or supergroup chat.
 type BotCommandScopeChatMember struct {
-	// Type is a scope type, must be chat_member.
-	Type string `json:"type"`
+	// Type is a scope type, must be BotCommandScopeTypeChatMember.
+	Type BotCommandScopeType `json:"type"`
 
 	// Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername).
 	ChatID int64 `json:"chat_id"`
 
 	// ChatID is a unique identifier of the target user.
 	UserID int64 `json:"user_id"`
+}
+
+type MenuButtonType string
+
+const (
+	MenuButtonTypeCommands MenuButtonType = "commands"
+	MenuButtonTypeWebApp   MenuButtonType = "web_app"
+	MenuButtonTypeDefault  MenuButtonType = "default"
+)
+
+// MenuButton describes the bot's menu button in a private chat.
+// It should be one of:
+// MenuButtonCommands,
+// MenuButtonWebApp,
+// MenuButtonDefault.
+//
+// If a menu button other than MenuButtonDefault is set for a private chat, then it is applied in the chat.
+// Otherwise the default menu button is applied.
+// By default, the menu button opens the list of bot commands.
+type MenuButton struct {
+	// Type of the button.
+	Type MenuButtonType `json:"type"`
+
+	// Text on the button.
+	Text string `json:"text,omitempty"`
+
+	// WebApp is a description of the Web App that will be launched when the user presses the button.
+	// The Web App will be able to send an arbitrary message on behalf of the user using the method answerWebAppQuery.
+	WebApp *WebAppInfo `json:"web_app,omitempty"`
+}
+
+// MenuButtonCommands is a menu button, which opens the bot's list of commands.
+type MenuButtonCommands struct {
+	// Type of the button, must be MenuButtonTypeCommands.
+	Type MenuButtonType `json:"type"`
+}
+
+// MenuButtonWebApp is a menu button, which launches a Web App.
+type MenuButtonWebApp struct {
+	// Type of the button, must be MenuButtonTypeWebApp.
+	Type MenuButtonType `json:"type"`
+
+	// Text on the button.
+	Text string `json:"text"`
+
+	// WebApp is a description of the Web App that will be launched when the user presses the button.
+	// The Web App will be able to send an arbitrary message on behalf of the user using the method answerWebAppQuery.
+	WebApp *WebAppInfo `json:"web_app"`
+}
+
+// MenuButtonDefault is that no specific value for the menu button was set.
+type MenuButtonDefault struct {
+	// Type of the button, must be MenuButtonTypeDefault.
+	Type MenuButtonType `json:"type"`
 }
 
 // ResponseParameters are various errors that can be returned in APIResponse.
@@ -2136,6 +2184,345 @@ type InlineQuery struct {
 	Location *Location `json:"location,omitempty"`
 }
 
+type InlineQueryResultType string
+
+const (
+	InlineQueryResultTypeArticle  InlineQueryResultType = "article"
+	InlineQueryResultTypePhoto    InlineQueryResultType = "photo"
+	InlineQueryResultTypeGif      InlineQueryResultType = "gif"
+	InlineQueryResultTypeMpeg4Gif InlineQueryResultType = "mpeg4_gif"
+	InlineQueryResultTypeVideo    InlineQueryResultType = "video"
+	InlineQueryResultTypeAudio    InlineQueryResultType = "audio"
+	InlineQueryResultTypeVoice    InlineQueryResultType = "voice"
+	InlineQueryResultTypeDocument InlineQueryResultType = "document"
+	InlineQueryResultTypeLocation InlineQueryResultType = "location"
+	InlineQueryResultTypeVenue    InlineQueryResultType = "venue"
+	InlineQueryResultTypeContact  InlineQueryResultType = "contact"
+	InlineQueryResultTypeGame     InlineQueryResultType = "game"
+	InlineQueryResultTypeSticker  InlineQueryResultType = "sticker"
+)
+
+// InlineQueryResult is the result of an inline query.
+// Telegram clients currently support results of the following 20 types:
+// InlineQueryResultCachedAudio,
+// InlineQueryResultCachedDocument,
+// InlineQueryResultCachedGif,
+// InlineQueryResultCachedMpeg4Gif,
+// InlineQueryResultCachedPhoto,
+// InlineQueryResultCachedSticker,
+// InlineQueryResultCachedVideo,
+// InlineQueryResultCachedVoice,
+// InlineQueryResultArticle,
+// InlineQueryResultAudio,
+// InlineQueryResultContact,
+// InlineQueryResultGame,
+// InlineQueryResultDocument,
+// InlineQueryResultGif,
+// InlineQueryResultLocation,
+// InlineQueryResultMpeg4Gif,
+// InlineQueryResultPhoto,
+// InlineQueryResultVenue,
+// InlineQueryResultVideo,
+// InlineQueryResultVoice.
+type InlineQueryResult struct {
+	InlineQueryResultArticle
+	InlineQueryResultPhoto
+	InlineQueryResultGif
+	InlineQueryResultMpeg4Gif
+	InlineQueryResultVideo
+	InlineQueryResultAudio
+	InlineQueryResultVoice
+	InlineQueryResultDocument
+	InlineQueryResultLocation
+	InlineQueryResultVenue
+	InlineQueryResultContact
+	InlineQueryResultGame
+	InlineQueryResultCachedPhoto
+	InlineQueryResultCachedGif
+	InlineQueryResultCachedMpeg4Gif
+	InlineQueryResultCachedSticker
+	InlineQueryResultCachedDocument
+	InlineQueryResultCachedVideo
+	InlineQueryResultCachedAudio
+	InlineQueryResultCachedVoice
+}
+
+type InlineQueryResultArticle[MC InputMessageContent] struct {
+	// Type of the result, must be InlineQueryResultTypeArticle.
+	Type InlineQueryResultType `json:"type"`
+
+	// ID is a unique identifier for this result, 1-64 Bytes.
+	ID string `json:"id"`
+
+	// Title of the result.
+	Title string `json:"title"`
+
+	// InputMessageContent is a content of the message to be sent.
+	InputMessageContent *MC `json:"input_message_content"`
+
+	// ReplyMarkup is an InlineKeyboardMarkup attached to the message.
+	//
+	// Optional.
+	ReplyMarkup *InlineKeyboardMarkup `json:"reply_markup,omitempty"`
+
+	// URL of the result.
+	//
+	// Optional.
+	URL string `json:"url,omitempty"`
+
+	// HideURL is used to hide the URL to be shown in the message.
+	//
+	// Optional.
+	HideURL bool `json:"hide_url,omitempty"`
+
+	//  Description is a short description of the result.
+	//
+	// Optional.
+	Description string `json:"description,omitempty"`
+
+	// ThumbURL of the thumbnail for the result
+	//
+	// Optional.
+	ThumbURL string `json:"thumb_url,omitempty"`
+
+	// ThumbWidth is a width of the Thumbnail.
+	//
+	// Optional.
+	ThumbWidth int `json:"thumb_width,omitempty"`
+
+	// ThumbHeight is a height of the Thumbnail.
+	//
+	// Optional.
+	ThumbHeight int `json:"thumb_height,omitempty"`
+}
+
+// InlineQueryResultPhoto is a link to a photo.
+// By default, this photo will be sent by the user with optional caption.
+// Alternatively, you can use input_message_content to send a message with the specified content instead of the photo.
+type InlineQueryResultPhoto[MC InputMessageContent] struct {
+	// Type of the result, must be InlineQueryResultTypePhoto.
+	Type InlineQueryResultType `json:"type"`
+
+	// ID is a unique identifier for this result, 1-64 Bytes.
+	ID string `json:"id"`
+
+	// PhotoURL is a valid URL of the photo.
+	// Photo must be in JPEG format.
+	// Photo size must not exceed 5MB.
+	PhotoURL string `json:"photo_url"`
+
+	// ThumbURL is a URL of the thumbnail for the photo.
+	ThumbURL string `json:"thumb_url"`
+
+	// PhotoWidth is a width of the photo.
+	//
+	// Optional.
+	PhotoWidth int `json:"photo_width,omitempty"`
+
+	// PhotoHeight is a height of the photo.
+	//
+	// Optional.
+	PhotoHeight int `json:"photo_height,omitempty"`
+
+	// Title of the result.
+	//
+	// Optional.
+	Title string `json:"title,omitempty"`
+
+	//  Description is a short description of the result.
+	//
+	// Optional.
+	Description string `json:"description,omitempty"`
+
+	// Caption of the photo to be sent, 0-1024 characters after entities parsing.
+	//
+	// Optional.
+	Caption string `json:"caption,omitempty"`
+
+	// ParseMode is a mode for parsing entities in the photo caption.
+	// See https://core.telegram.org/bots/api#formatting-options for more details.
+	//
+	// Optional.
+	ParseMode ParseMode `json:"parse_mode,omitempty"`
+
+	// CaptionEntities is an array of special entities that appear in the caption,
+	// which can be specified instead of parse_mode.
+	//
+	// Optional.
+	CaptionEntities []*MessageEntity `json:"caption_entities,omitempty"`
+
+	// ReplyMarkup is an InlineKeyboardMarkup attached to the message.
+	//
+	// Optional.
+	ReplyMarkup *InlineKeyboardMarkup `json:"reply_markup,omitempty"`
+
+	// InputMessageContent is a content of the message to be sent instead of the photo.
+	//
+	// Optional.
+	InputMessageContent *MC `json:"input_message_content,omitempty"`
+}
+
+// InlineQueryResultGif
+// TODO: https://core.telegram.org/bots/api#inlinequeryresultgif
+type InlineQueryResultGif struct {
+	// Type of the result, must be InlineQueryResultTypeGif.
+	Type InlineQueryResultType `json:"type"`
+}
+
+// InlineQueryResultMpeg4Gif
+// TODO: https://core.telegram.org/bots/api#inlinequeryresultmpeg4gif
+type InlineQueryResultMpeg4Gif struct {
+	// Type of the result, must be InlineQueryResultTypeMpeg4Gif.
+	Type InlineQueryResultType `json:"type"`
+}
+
+// InlineQueryResultVideo
+// TODO: https://core.telegram.org/bots/api#inlinequeryresultvideo
+type InlineQueryResultVideo struct {
+	// Type of the result, must be InlineQueryResultTypeVideo.
+	Type InlineQueryResultType `json:"type"`
+}
+
+// InlineQueryResultAudio
+// TODO: https://core.telegram.org/bots/api#inlinequeryresultaudio
+type InlineQueryResultAudio struct {
+	// Type of the result, must be InlineQueryResultTypeAudio.
+	Type InlineQueryResultType `json:"type"`
+}
+
+// InlineQueryResultVoice
+// TODO: https://core.telegram.org/bots/api#inlinequeryresultvoice
+type InlineQueryResultVoice struct {
+	// Type of the result, must be InlineQueryResultTypeVoice.
+	Type InlineQueryResultType `json:"type"`
+}
+
+// InlineQueryResultDocument
+// TODO: https://core.telegram.org/bots/api#inlinequeryresultdocument
+type InlineQueryResultDocument struct {
+	// Type of the result, must be InlineQueryResultTypeDocument.
+	Type InlineQueryResultType `json:"type"`
+}
+
+// InlineQueryResultLocation
+// TODO: https://core.telegram.org/bots/api#inlinequeryresultlocation
+type InlineQueryResultLocation struct {
+	// Type of the result, must be InlineQueryResultTypeLocation.
+	Type InlineQueryResultType `json:"type"`
+}
+
+// InlineQueryResultVenue
+// TODO: https://core.telegram.org/bots/api#inlinequeryresultvenue
+type InlineQueryResultVenue struct {
+	// Type of the result, must be InlineQueryResultTypeVenue.
+	Type InlineQueryResultType `json:"type"`
+}
+
+// InlineQueryResultContact
+// TODO: https://core.telegram.org/bots/api#inlinequeryresultcontact
+type InlineQueryResultContact struct {
+	// Type of the result, must be InlineQueryResultTypeContact.
+	Type InlineQueryResultType `json:"type"`
+}
+
+// InlineQueryResultGame
+// TODO: https://core.telegram.org/bots/api#inlinequeryresultgame
+type InlineQueryResultGame struct {
+	// Type of the result, must be InlineQueryResultTypeGame.
+	Type InlineQueryResultType `json:"type"`
+}
+
+// InlineQueryResultCachedPhoto
+// TODO: https://core.telegram.org/bots/api#inlinequeryresultcachedphoto
+type InlineQueryResultCachedPhoto struct {
+	// Type of the result, must be InlineQueryResultTypePhoto.
+	Type InlineQueryResultType `json:"type"`
+}
+
+// InlineQueryResultCachedGif
+// TODO: https://core.telegram.org/bots/api#inlinequeryresultcachedgif
+type InlineQueryResultCachedGif struct {
+	// Type of the result, must be InlineQueryResultTypeGif.
+	Type InlineQueryResultType `json:"type"`
+}
+
+// InlineQueryResultCachedMpeg4Gif
+// TODO: https://core.telegram.org/bots/api#inlinequeryresultcachedmpeg4gif
+type InlineQueryResultCachedMpeg4Gif struct {
+	// Type of the result, must be InlineQueryResultTypeMpeg4Gif.
+	Type InlineQueryResultType `json:"type"`
+}
+
+// InlineQueryResultCachedSticker
+// TODO: https://core.telegram.org/bots/api#inlinequeryresultcachedsticker
+type InlineQueryResultCachedSticker struct {
+	// Type of the result, must be InlineQueryResultTypeSticker.
+	Type InlineQueryResultType `json:"type"`
+}
+
+// InlineQueryResultCachedDocument
+// TODO: https://core.telegram.org/bots/api#inlinequeryresultcacheddocument
+type InlineQueryResultCachedDocument struct {
+	// Type of the result, must be InlineQueryResultTypeDocument.
+	Type InlineQueryResultType `json:"type"`
+}
+
+// InlineQueryResultCachedVideo
+// TODO: https://core.telegram.org/bots/api#inlinequeryresultcachedvideo
+type InlineQueryResultCachedVideo struct {
+	// Type of the result, must be InlineQueryResultTypeVideo.
+	Type InlineQueryResultType `json:"type"`
+}
+
+// InlineQueryResultCachedAudio
+// TODO: https://core.telegram.org/bots/api#inlinequeryresultcachedaudio
+type InlineQueryResultCachedAudio struct {
+	// Type of the result, must be InlineQueryResultTypeAudio.
+	Type InlineQueryResultType `json:"type"`
+}
+
+// InlineQueryResultCachedVoice
+// TODO: https://core.telegram.org/bots/api#inlinequeryresultcachedvoice
+type InlineQueryResultCachedVoice struct {
+	// Type of the result, must be InlineQueryResultTypeVoice.
+	Type InlineQueryResultType `json:"type"`
+}
+
+// InputMessageContent is the content of a message to be sent as a result of an inline query.
+// Telegram clients currently support the following 5 types:
+// InputTextMessageContent,
+// InputLocationMessageContent,
+// InputVenueMessageContent,
+// InputContactMessageContent,
+// InputInvoiceMessageContent.
+type InputMessageContent interface {
+	InputTextMessageContent |
+		InputLocationMessageContent |
+		InputVenueMessageContent |
+		InputContactMessageContent |
+		InputInvoiceMessageContent
+}
+
+// InputTextMessageContent
+// TODO: https://core.telegram.org/bots/api#inputtextmessagecontent
+type InputTextMessageContent struct{}
+
+// InputLocationMessageContent
+// TODO: https://core.telegram.org/bots/api#inputlocationmessagecontent
+type InputLocationMessageContent struct{}
+
+// InputVenueMessageContent
+// TODO: https://core.telegram.org/bots/api#inputvenuemessagecontent
+type InputVenueMessageContent struct{}
+
+// InputContactMessageContent
+// TODO: https://core.telegram.org/bots/api#inputcontactmessagecontent
+type InputContactMessageContent struct{}
+
+// InputInvoiceMessageContent
+// TODO: https://core.telegram.org/bots/api#inputinvoicemessagecontent
+type InputInvoiceMessageContent struct{}
+
 // ChosenInlineResult is a result of an inline query that was chosen by the user and sent to their chat partner.
 type ChosenInlineResult struct {
 	// ResultID is the unique identifier for the result that was chosen.
@@ -2158,6 +2545,15 @@ type ChosenInlineResult struct {
 
 	// Query is the query that was used to obtain the result.
 	Query string `json:"query"`
+}
+
+// SentWebAppMessage is an information about an inline message sent by a Web App on behalf of a user.
+type SentWebAppMessage struct {
+	// InlineMessageID is an identifier of the sent inline message.
+	// Available only if there is an inline keyboard attached to the message.
+	//
+	// Optional.
+	InlineMessageID string `json:"inline_message_id"`
 }
 
 // LabeledPrice is a portion of the price for goods or services.
@@ -2505,34 +2901,15 @@ const (
 // PassportElementErrorTranslationFiles,
 // PassportElementErrorUnspecified.
 type PassportElementError struct {
-	// Source is an error source.
-	Source PassportElementErrorSource `json:"source"`
-
-	// Type of element of the user's Telegram Passport which has the issue.
-	Type EncryptedPassportElementType `json:"type"`
-
-	// DataHash is a Base64-encoded data hash.
-	//
-	// Optional.
-	DataHash string `json:"data_hash,omitempty"`
-
-	// FileHash is a Base64-encoded file hash.
-	//
-	// Optional.
-	FileHash string `json:"file_hash,omitempty"`
-
-	// FileHashes is an array of base64-encoded file hashes.
-	//
-	// Optional.
-	FileHashes []string `json:"file_hashes,omitempty"`
-
-	// ElementHash us a Base64-encoded element hash.
-	//
-	// Optional.
-	ElementHash string `json:"element_hash,omitempty"`
-
-	// Message of an error.
-	Message string `json:"message"`
+	PassportElementErrorDataField
+	PassportElementErrorFrontSide
+	PassportElementErrorReverseSide
+	PassportElementErrorSelfie
+	PassportElementErrorFile
+	PassportElementErrorFiles
+	PassportElementErrorTranslationFile
+	PassportElementErrorTranslationFiles
+	PassportElementErrorUnspecified
 }
 
 // PassportElementErrorDataField is an issue in one of the data fields that was provided by the user.

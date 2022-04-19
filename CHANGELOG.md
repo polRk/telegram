@@ -1,5 +1,8 @@
 package api
 
+## 18.04.2022
+- Telegram Bot API 6.0
+
 ## 06.04.2022
 - Update package name
 
