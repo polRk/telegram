@@ -2247,7 +2247,7 @@ type InlineQueryResult struct {
 	InlineQueryResultCachedVoice
 }
 
-type InlineQueryResultArticle[MC InputMessageContent] struct {
+type InlineQueryResultArticle struct {
 	// Type of the result, must be InlineQueryResultTypeArticle.
 	Type InlineQueryResultType `json:"type"`
 
@@ -2258,7 +2258,7 @@ type InlineQueryResultArticle[MC InputMessageContent] struct {
 	Title string `json:"title"`
 
 	// InputMessageContent is a content of the message to be sent.
-	InputMessageContent *MC `json:"input_message_content"`
+	InputMessageContent *InputMessageContent `json:"input_message_content"`
 
 	// ReplyMarkup is an InlineKeyboardMarkup attached to the message.
 	//
@@ -2299,7 +2299,7 @@ type InlineQueryResultArticle[MC InputMessageContent] struct {
 // InlineQueryResultPhoto is a link to a photo.
 // By default, this photo will be sent by the user with optional caption.
 // Alternatively, you can use input_message_content to send a message with the specified content instead of the photo.
-type InlineQueryResultPhoto[MC InputMessageContent] struct {
+type InlineQueryResultPhoto struct {
 	// Type of the result, must be InlineQueryResultTypePhoto.
 	Type InlineQueryResultType `json:"type"`
 
@@ -2359,7 +2359,7 @@ type InlineQueryResultPhoto[MC InputMessageContent] struct {
 	// InputMessageContent is a content of the message to be sent instead of the photo.
 	//
 	// Optional.
-	InputMessageContent *MC `json:"input_message_content,omitempty"`
+	InputMessageContent *InputMessageContent `json:"input_message_content,omitempty"`
 }
 
 // InlineQueryResultGif
@@ -2495,12 +2495,12 @@ type InlineQueryResultCachedVoice struct {
 // InputVenueMessageContent,
 // InputContactMessageContent,
 // InputInvoiceMessageContent.
-type InputMessageContent interface {
-	InputTextMessageContent |
-		InputLocationMessageContent |
-		InputVenueMessageContent |
-		InputContactMessageContent |
-		InputInvoiceMessageContent
+type InputMessageContent struct {
+	InputTextMessageContent
+	InputLocationMessageContent
+	InputVenueMessageContent
+	InputContactMessageContent
+	InputInvoiceMessageContent
 }
 
 // InputTextMessageContent

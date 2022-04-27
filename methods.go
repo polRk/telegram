@@ -84,12 +84,12 @@ func (c *Client) SendMessage(ctx context.Context, payload *SendMessagePayload) (
 	return &message, err
 }
 
-type AnswerWebAppQueryPayload[IQR InlineQueryResult] struct {
+type AnswerWebAppQueryPayload struct {
 	// WebAppQueryId is a unique identifier for the query to be answered.
 	WebAppQueryId string `json:"web_app_query_id"`
 
 	// Result is a JSON-serialized object describing the message to be sent.
-	Result *IQR `json:"result"`
+	Result *InlineQueryResult `json:"result"`
 }
 
 // AnswerWebAppQuery set the result of an interaction with a Web App and
