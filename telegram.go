@@ -68,8 +68,6 @@ func New(token string, options ...Option) *Client {
 func (c *Client) MakeRequest(ctx context.Context, method string, body interface{}) (*APIResponse, error) {
 	endpoint := fmt.Sprintf(c.apiEndpoint, c.token, method)
 
-	fmt.Println(endpoint)
-
 	buf := new(bytes.Buffer)
 	if err := json.NewEncoder(buf).Encode(body); err != nil {
 		return nil, err
